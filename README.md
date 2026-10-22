@@ -1,5 +1,5 @@
 
-# NQueensSearchLab
+# N-Queens Search Lab
 
 A Java project comparing three candidate-ordering strategies for
 finding a first solution to the N-Queens problem.
