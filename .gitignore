@@ -1,0 +1,28 @@
+# Compiled Java files
+*.class
+
+# Build output
+out/
+build/
+
+# IDE settings
+.vscode/
+.idea/
+*.iml
+
+# Logs
+*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# Benchmark output (keep the results folder)
+# Uncomment the next line if you don't want to track generated CSV results
+# results/*.csv
