@@ -1,5 +1,5 @@
 
-package nqueens.tests;
+
 
 import nqueens.core.NQueensSolver;
 import nqueens.core.SearchResult;
