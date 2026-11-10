@@ -1,9 +1,7 @@
-
-
-
 import nqueens.core.NQueensSolver;
 import nqueens.core.SearchResult;
 import nqueens.core.SolutionValidator;
+
 import nqueens.strategies.CenterOutOrdering;
 import nqueens.strategies.KnightDFSOrdering;
 import nqueens.strategies.SearchStrategy;
