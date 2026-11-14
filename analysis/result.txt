@@ -1,0 +1,15 @@
+# Experimental Results
+
+This folder stores the outputs of benchmark experiments.
+
+## Files
+
+- benchmark.csv: Raw benchmark measurements.
+- figures/: Generated charts.
+
+## Reproducing results
+
+Compile the Java project and run:
+
+```bash
+java -cp out nqueens.Main benchmark 4 20 3 7
