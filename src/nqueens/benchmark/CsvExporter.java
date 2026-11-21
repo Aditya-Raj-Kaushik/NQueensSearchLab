@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 
 public final class CsvExporter {
+
     private CsvExporter() {}
 
     public static void write(
@@ -21,30 +22,30 @@ public final class CsvExporter {
         StringBuilder csv = new StringBuilder();
 
         csv.append(
-            "n,algorithm,nodes,candidate_checks,placements,backtracks,"
+            "n,strategy,nodes,candidate_checks,placements,backtracks,"
             + "preprocessing_squares,search_median_ms,"
             + "preprocessing_median_ms,total_median_ms\n"
         );
 
         for (BenchmarkResult r : results) {
             csv.append(r.n).append(',')
-               .append(r.algorithm).append(',')
+               .append(r.strategy).append(',')
                .append(r.nodes).append(',')
                .append(r.candidateChecks).append(',')
                .append(r.placements).append(',')
                .append(r.backtracks).append(',')
                .append(r.preprocessingSquares).append(',')
-               .append(String.format(Locale.ROOT, "%.6f", r.searchMedianMs))
+               .append(String.format(Locale.ROOT, "%.6f", r.searchMs))
                .append(',')
-               .append(String.format(
-                   Locale.ROOT, "%.6f", r.preprocessingMedianMs))
+               .append(String.format(Locale.ROOT, "%.6f", r.preprocessingMs))
                .append(',')
-               .append(String.format(Locale.ROOT, "%.6f", r.totalMedianMs))
+               .append(String.format(Locale.ROOT, "%.6f", r.totalMs))
                .append('\n');
         }
 
         Files.write(
-            path, csv.toString().getBytes(StandardCharsets.UTF_8)
+            path,
+            csv.toString().getBytes(StandardCharsets.UTF_8)
         );
     }
 }

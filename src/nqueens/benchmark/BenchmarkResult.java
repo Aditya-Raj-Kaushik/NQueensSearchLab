@@ -1,3 +1,4 @@
+
 package nqueens.benchmark;
 
 public final class BenchmarkResult {
@@ -15,10 +16,6 @@ public final class BenchmarkResult {
     public final double preprocessingMs;
     public final double searchMs;
     public final double totalMs;
-    public Object algorithm;
-    public Object searchMedianMs;
-    public Object preprocessingMedianMs;
-    public Object totalMedianMs;
 
     public BenchmarkResult(
             int n,
