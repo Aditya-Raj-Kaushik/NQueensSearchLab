@@ -1,31 +1,80 @@
-
 package nqueens;
 
-import java.util.Scanner;
-import nqueens.core.NQueensSolver;
-import nqueens.core.SearchResult;
-import nqueens.core.SolutionValidator;
-import nqueens.strategies.CenterOutOrdering;
-import nqueens.strategies.KnightDFSOrdering;
-import nqueens.strategies.SearchStrategy;
-import nqueens.strategies.StandardOrdering;
+import java.io.File;
+import java.util.List;
+
+import nqueens.core.*;
+import nqueens.strategies.*;
+import nqueens.benchmark.*;
 
 public final class Main {
-    public static void main(String[] args) {
-        int n;
 
-        if (args.length > 0) {
-            n = Integer.parseInt(args[0]);
-        } else {
-            Scanner scanner = new Scanner(System.in);
-            System.out.print("Enter board size N: ");
-            n = scanner.nextInt();
+    public static void main(String[] args) throws Exception {
+
+        if (args.length == 0 || args[0].equalsIgnoreCase("solve")) {
+
+            int n = args.length > 1
+                    ? Integer.parseInt(args[1])
+                    : 8;
+
+            solve(n);
         }
 
-        if (n < 1) {
-            System.out.println("N must be at least 1.");
-            return;
+        else if (args[0].equalsIgnoreCase("benchmark")) {
+
+            int minN = args.length > 1
+                    ? Integer.parseInt(args[1]) : 4;
+
+            int maxN = args.length > 2
+                    ? Integer.parseInt(args[2]) : 20;
+
+            int warmups = args.length > 3
+                    ? Integer.parseInt(args[3]) : 3;
+
+            int repetitions = args.length > 4
+                    ? Integer.parseInt(args[4]) : 7;
+
+            BenchmarkRunner runner =
+                    new BenchmarkRunner(warmups, repetitions);
+
+            List<BenchmarkResult> results =
+                    runner.run(minN, maxN);
+
+            for (BenchmarkResult r : results) {
+
+                System.out.printf(
+                    "%2d %-10s solved=%-5s nodes=%-9d "
+                    + "checks=%-10d search=%8.4fms total=%8.4fms%n",
+                    r.n,
+                    r.strategy,
+                    r.solved,
+                    r.nodes,
+                    r.candidateChecks,
+                    r.searchMs,
+                    r.totalMs
+                );
+            }
+
+            CsvExporter.write(
+                    new File("results/benchmark.csv"),
+                    results
+            );
+
+            System.out.println(
+                    "\nCSV exported to results/benchmark.csv"
+            );
         }
+
+        else {
+            System.out.println("Usage:");
+            System.out.println("solve [N]");
+            System.out.println(
+                "benchmark [minN] [maxN] [warmups] [repetitions]"
+            );
+        }
+    }
+
+    private static void solve(int n) {
 
         SearchStrategy[] strategies = {
             new StandardOrdering(),
@@ -33,33 +82,35 @@ public final class Main {
             new CenterOutOrdering()
         };
 
-        System.out.println("\nN-Queens Search Lab");
-        System.out.println("Board size: N = " + n);
-
         for (SearchStrategy strategy : strategies) {
+
             SearchResult result =
-                new NQueensSolver(n, strategy).solveFirst();
+                    new NQueensSolver(n, strategy).solveFirst();
 
-            System.out.println("\n--- " + strategy.name() + " ---");
-
-            if (!result.found()) {
-                System.out.println("No solution exists.");
-                continue;
-            }
-
-            if (!SolutionValidator.isValid(result.board())) {
-                throw new IllegalStateException("Solution validation failed");
-            }
-
-            System.out.print(result.board().render());
-            System.out.println("Valid solution: yes");
-            System.out.println("Recursive nodes: " + result.nodes());
-            System.out.println("Candidate checks: " + result.candidateChecks());
-            System.out.println("Placements: " + result.placements());
-            System.out.println("Backtracks: " + result.backtracks());
             System.out.println(
-                "Preprocessing squares: " + strategy.preprocessingSquares()
+                    "\n========== " + strategy.name()
+                    + " | N = " + n + " =========="
             );
+
+            System.out.println(
+                    "Solution found: " + result.hasSolution()
+            );
+
+            if (result.hasSolution()) {
+                System.out.print(result.getBoard().render());
+
+                System.out.println(
+                    "Valid solution: "
+                    + SolutionValidator.isValid(result.getBoard())
+                );
+            }
+
+            System.out.println("Nodes: " + result.getNodes());
+            System.out.println(
+                    "Candidate checks: " + result.getCandidateChecks()
+            );
+            System.out.println("Placements: " + result.getPlacements());
+            System.out.println("Backtracks: " + result.getBacktracks());
         }
     }
 }
