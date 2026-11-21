@@ -1,6 +1,6 @@
 package nqueens;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 import nqueens.core.*;
@@ -14,13 +14,11 @@ public final class Main {
         if (args.length == 0 || args[0].equalsIgnoreCase("solve")) {
 
             int n = args.length > 1
-                    ? Integer.parseInt(args[1])
-                    : 8;
+                    ? Integer.parseInt(args[1]) : 8;
 
             solve(n);
-        }
 
-        else if (args[0].equalsIgnoreCase("benchmark")) {
+        } else if (args[0].equalsIgnoreCase("benchmark")) {
 
             int minN = args.length > 1
                     ? Integer.parseInt(args[1]) : 4;
@@ -35,7 +33,7 @@ public final class Main {
                     ? Integer.parseInt(args[4]) : 7;
 
             BenchmarkRunner runner =
-                    new BenchmarkRunner(warmups, repetitions);
+                    new BenchmarkRunner(warmups, repetitions, maxN);
 
             List<BenchmarkResult> results =
                     runner.run(minN, maxN);
@@ -44,28 +42,27 @@ public final class Main {
 
                 System.out.printf(
                     "%2d %-10s solved=%-5s nodes=%-9d "
-                    + "checks=%-10d search=%8.4fms total=%8.4fms%n",
+                    + "checks=%-10d search=%8.4fms%n",
                     r.n,
                     r.strategy,
                     r.solved,
                     r.nodes,
                     r.candidateChecks,
-                    r.searchMs,
-                    r.totalMs
+                    r.searchMs
                 );
             }
 
             CsvExporter.write(
-                    new File("results/benchmark.csv"),
+                    Path.of("results/benchmark.csv"),
                     results
             );
 
             System.out.println(
                     "\nCSV exported to results/benchmark.csv"
             );
-        }
 
-        else {
+        } else {
+
             System.out.println("Usage:");
             System.out.println("solve [N]");
             System.out.println(
@@ -92,25 +89,24 @@ public final class Main {
                     + " | N = " + n + " =========="
             );
 
-            System.out.println(
-                    "Solution found: " + result.hasSolution()
-            );
+            System.out.println("Solution found: " + result.found());
 
-            if (result.hasSolution()) {
-                System.out.print(result.getBoard().render());
+            if (result.found()) {
+
+                System.out.println(result.board().render());
 
                 System.out.println(
-                    "Valid solution: "
-                    + SolutionValidator.isValid(result.getBoard())
+                    "Valid: "
+                    + SolutionValidator.isValid(result.board())
                 );
             }
 
-            System.out.println("Nodes: " + result.getNodes());
+            System.out.println("Nodes: " + result.nodes());
             System.out.println(
-                    "Candidate checks: " + result.getCandidateChecks()
+                    "Candidate checks: " + result.candidateChecks()
             );
-            System.out.println("Placements: " + result.getPlacements());
-            System.out.println("Backtracks: " + result.getBacktracks());
+            System.out.println("Placements: " + result.placements());
+            System.out.println("Backtracks: " + result.backtracks());
         }
     }
 }
